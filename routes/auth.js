@@ -3,6 +3,7 @@ const {check} = require('express-validator');
 const {validateEmailInDB} = require('../middlewares/db-validators');
 const {validateFields} = require('../middlewares/validate-fields');
 const {signup, login} = require('../controllers/auth');
+const {isValid} = require('../middlewares/isAValidAuthentication');
 
 const router = Router();
 
@@ -18,12 +19,10 @@ router.post('/signup',
 
 router.post('/login', 
     [
-        //validate user enabled
-        //validate user exist
-        //validate password
         check('email', 'Email is required').notEmpty(),
         check('password', 'Password is required').notEmpty(),
-        validateFields
+        validateFields,
+        isValid,
     ],
     login);
 

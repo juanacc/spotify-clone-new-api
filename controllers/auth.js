@@ -12,13 +12,15 @@ exports.signup = async (req, res=response) => {
         const user = new User({ name, email: email.toLowerCase(), password, avatar, role});
         user.password = encryptPassword(password);
         const userDb = await save(user);
+        
         const data = {
             name,
-            avatar,
-            role    
+            avatar: userDb.avatar,
+            role: userDb.role    
         };
-        const token = generateJWT(userDb.uid);
-        res.json(success({data, token}));
+        const token = await generateJWT(userDb.uid);
+        
+        return res.json(success({data, token}));
     } catch (error) {
         console.log(error);
         res.json(error(500,{
@@ -28,20 +30,22 @@ exports.signup = async (req, res=response) => {
     }
 }
 
-exports.login = (req, res=response) => {
-    //const {uid} = req.uid;
-    const {uid, name, avatar, role} = req;
+exports.login = async (req, res=response) => {
+    const {user} = req;
+
     try {
-        const token = generateJWT(uid);
+        const token = await generateJWT(user._id);
+    
         const data = {
-            name,
-            avatar,
-            role
+            name: user.name,
+            avatar: user.avatar,
+            role: user.role
         };
-        res.json(success({data, token}))
         
-    } catch (error) {
-        console.log(error);
+        return res.json(success({data, token}))
+        
+    } catch (err) {
+        console.log(err);
         res.json(error('500', {
             ok: false,
             msg: 'unexpected error'

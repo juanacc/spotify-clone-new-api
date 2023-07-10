@@ -6,5 +6,5 @@ const formatResponse = (statusCode, body) => ({
 exports.success = (data) =>
     formatResponse(200, data);
 
-exports.error = (data) =>
+exports.error = (code, data) =>
     formatResponse(code, data);

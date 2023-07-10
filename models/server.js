@@ -43,7 +43,7 @@ class Server {
 
     routes() {
         this.app.use(this.authPath, require('../routes/auth'));
-        this.app.use(this.tracksPath, require('../routes/tracks'));
+        //this.app.use(this.tracksPath, require('../routes/tracks'));
     }
 
     listen(){
