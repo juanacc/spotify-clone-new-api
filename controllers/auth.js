@@ -32,9 +32,9 @@ exports.signup = async (req, res=response) => {
 
 exports.login = async (req, res=response) => {
     const {user} = req;
-
+    //console.log('ENTRE', user)
     try {
-        const token = await generateJWT(user._id);
+        const tokenSession = await generateJWT(user._id);
     
         const data = {
             name: user.name,
@@ -42,7 +42,7 @@ exports.login = async (req, res=response) => {
             role: user.role
         };
         
-        return res.json(success({data, token}))
+        return res.status(200).json({data, tokenSession});
         
     } catch (err) {
         console.log(err);

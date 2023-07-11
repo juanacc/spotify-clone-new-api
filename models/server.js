@@ -9,6 +9,7 @@ class Server {
 
         this.authPath = '/api/1.0/auth';
         this.tracksPath = '/api/1.0/tracks';
+        this.adminPath = '/api/1.0/admin';
 
         //DB Connection
         this.DBConnect();
@@ -35,7 +36,8 @@ class Server {
         this.app.use(cors());
 
         //Lectura y parseo del body
-        this.app.use(express.json());
+        //this.app.use(express.json());
+        this.app.use(express.json({ limit: '50mb' }));
 
         //Directorio publico para hosting
         this.app.use(express.static('public'));
@@ -43,7 +45,8 @@ class Server {
 
     routes() {
         this.app.use(this.authPath, require('../routes/auth'));
-        //this.app.use(this.tracksPath, require('../routes/tracks'));
+        this.app.use(this.tracksPath, require('../routes/tracks'));
+        this.app.use(this.adminPath, require('../routes/admin'));
     }
 
     listen(){
