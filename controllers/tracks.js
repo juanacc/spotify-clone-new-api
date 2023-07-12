@@ -1,5 +1,5 @@
 const { request,response} = require('express');
-const {getAll, saveTrack} = require('../services/tracks');
+const {getAll, saveTrack, findByIdAndUpdate, findByIdAndDelete} = require('../services/tracks');
 const {success, error} = require('../helpers/response');
 const Tracks = require('../models/tracks');
 
@@ -45,10 +45,37 @@ exports.addTrack = async (req=request, res=response) => {
     }
 }
 
-exports.deleteTrack = async (req=request, res=response) => {
-    
+exports.deleteTrack = async (req = request, res = response) => {
+    const {id} = req.params;
+    try {
+        await findByIdAndDelete(id);
+        res.status(200).json({msg: 'Delete track ok'});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'There is something wrong that is not right :)'
+        });
+    }
 }
 
-exports.editTrack = async (req=request, res=response) => {
+exports.editTrack = async (req = request, res = response) => {
+    const {userEmail, ...trackToUpdate} = req.body;
+    const {id} = req.params;
     
+    try {
+        const updatedTrack = {
+            ...(trackToUpdate.name && {name: trackToUpdate.name}),
+            ...(trackToUpdate.album && {album: trackToUpdate.album}),
+            ...(trackToUpdate.cover && {cover: trackToUpdate.cover}),
+            ...(trackToUpdate.artist && {artist: trackToUpdate.artist})
+        }
+
+        await findByIdAndUpdate(id, updatedTrack);
+        res.status(200).json({msg: 'Update track ok'});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'There is something wrong that is not right :)'
+        });
+    }
 }
