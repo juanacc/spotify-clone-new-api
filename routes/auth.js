@@ -1,8 +1,8 @@
 const {Router} = require('express');
 const {check} = require('express-validator');
-const {validateEmailInDB} = require('../middlewares/db-validators');
+const {validateEmailInDB, isAuthenticate} = require('../middlewares/db-validators');
 const {validateFields} = require('../middlewares/validate-fields');
-const {signup, login} = require('../controllers/auth');
+const {signup, login, changeRole} = require('../controllers/auth');
 const {isValid} = require('../middlewares/isAValidAuthentication');
 
 const router = Router();
@@ -25,5 +25,13 @@ router.post('/login',
         isValid,
     ],
     login);
+
+router.post('/role', 
+    [
+        isAuthenticate,
+        check('role', 'Role is required').notEmpty(),
+        validateFields
+    ], 
+    changeRole);
 
 module.exports = router;
