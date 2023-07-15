@@ -2,11 +2,12 @@ const {Router} = require('express');
 const {check} = require('express-validator');
 const {isAuthenticate, validatePermisionForAction} = require('../middlewares/db-validators');
 const {validateFields} = require('../middlewares/validate-fields');
-const {getAll, addTrack, deleteTrack, editTrack} = require('../controllers/tracks');
+const {getAll, addTrack, deleteTrack, editTrack, getSearch} = require('../controllers/tracks');
 
 const router = Router();
 
 router.get('/', isAuthenticate, getAll);
+router.get('/:search', isAuthenticate, getSearch);
 router.post('/add', 
     [
         isAuthenticate,

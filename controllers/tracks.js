@@ -5,9 +5,32 @@ const Tracks = require('../models/tracks');
 
 exports.getAll = async (req = request, res = response) => {
     const {userEmail} = req;
-    //console.log('EMAIL: ', userEmail)
+    //console.log('EMAIL: ', userEmail)    
     try {
         const tracks = await getAll(userEmail);
+        //console.log('TRACKS', tracks);
+        return res.status(200).json({data: tracks});
+    } catch (error) {
+        console.log(error);
+        res.json(error(500,{
+            ok: false,
+            msg: 'unexpected error'
+        }))
+    }
+}
+
+exports.getSearch = async (req = request, res = response) => {
+    const src = req.params.search;
+    const regex = new RegExp(src, 'i');
+    console.log('TERMINO DE BUSCA src', src);
+    try {
+        const [trackListArtist, trackListName, trackListAlbum] = await Promise.all([
+            Tracks.find({artist: regex}),
+            Tracks.find({name: regex}),
+            Tracks.find({album: regex})
+        ]);
+
+        const tracks = [...trackListArtist, ...trackListName, ...trackListAlbum];
         //console.log('TRACKS', tracks);
         return res.status(200).json({data: tracks});
     } catch (error) {
