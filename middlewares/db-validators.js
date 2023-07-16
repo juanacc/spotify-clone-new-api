@@ -25,6 +25,7 @@ exports.isAuthenticate = async (req = request, res = response, next) => {
         if(!user)
             return res.status(401).json(`There is no user with id: ${uid}`);
         req.userEmail = user.email;
+        req.role = user.role;
         next();       
     } catch (error) {
         console.log(error);

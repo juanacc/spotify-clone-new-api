@@ -25,3 +25,8 @@ exports.isValid = async (req = request, res = response, next) => {
     req.user = user;
     next();
 }
+
+exports.isAdmin = (req = request, res = response, next) => {
+    const role = req.role;
+    role == 'admin' ? next() : res.json(error(400, {message: 'ACTION NOT ALLOWED'})); 
+}
