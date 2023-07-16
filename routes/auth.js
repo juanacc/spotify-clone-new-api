@@ -26,7 +26,7 @@ router.post('/login',
     ],
     login);
 
-router.post('/role', 
+router.put('/role', 
     [
         isAuthenticate,
         check('role', 'Role is required').notEmpty(),

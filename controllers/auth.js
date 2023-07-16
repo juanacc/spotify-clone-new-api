@@ -2,7 +2,7 @@ const {request, response} = require('express');
 const { generateJWT } = require('../helpers/jwt');
 const {encryptPassword} = require('../helpers/handleEncryptions');
 const User = require('../models/user');
-const {save, findByEmailAndUpdate} = require('../services/auth');
+const {save, findByIdAndUpdate, find} = require('../services/auth');
 const {success, error} = require('../helpers/response');
 
 exports.signup = async (req, res=response) => {
@@ -18,9 +18,9 @@ exports.signup = async (req, res=response) => {
             avatar: userDb.avatar,
             role: userDb.role    
         };
-        const token = await generateJWT(userDb.uid);
+        const tokenSession = await generateJWT(userDb.uid);
         
-        return res.json(success({data, token}));
+        return res.json(success({data, tokenSession}));
     } catch (error) {
         console.log(error);
         res.json(error(500,{
@@ -56,10 +56,16 @@ exports.login = async (req, res=response) => {
 exports.changeRole = async (req = request, res = response) => {
     const {role} = req.body;
     const userEmail = req.userEmail;
+    //console.log(role, userEmail)
     try {
-        await findByEmailAndUpdate(userEmail, role);
+        const user = await find(userEmail);
+        //console.log('USUARIO', user);
+        const userUpdated = {
+            role
+        };
+        await findByIdAndUpdate(user._id, userUpdated);
         res.status(200).json({msg: 'Update role ok'});
-    } catch (error) {
+    } catch (err) {
         console.log(err);
         res.json(error('500', {
             ok: false,
