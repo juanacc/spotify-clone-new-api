@@ -21,13 +21,15 @@ exports.getAll = async (req = request, res = response) => {
 
 exports.getSearch = async (req = request, res = response) => {
     const src = req.params.search;
+    const userEmail = req.userEmail;
     const regex = new RegExp(src, 'i');
     console.log('TERMINO DE BUSCA src', src);
+    console.log('USER', userEmail);
     try {
         const [trackListArtist, trackListName, trackListAlbum] = await Promise.all([
-            Tracks.find({artist: regex}),
-            Tracks.find({name: regex}),
-            Tracks.find({album: regex})
+            Tracks.find({artist: regex, userEmail}),
+            Tracks.find({name: regex, userEmail}),
+            Tracks.find({album: regex, userEmail})
         ]);
 
         const tracks = [...trackListArtist, ...trackListName, ...trackListAlbum];
